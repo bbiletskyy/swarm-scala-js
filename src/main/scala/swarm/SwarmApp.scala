@@ -9,7 +9,7 @@ import scala.util.Random
 case class Agent(position: (Float, Float), angle: Float)
 
 @JSExport
-object ParticlesApp {
+object SwarmApp {
   val CANVAS_HEIGHT = 300
   val CANVAS_WIDTH = 300
   val AGENT_COUNT = 300
@@ -23,12 +23,9 @@ object ParticlesApp {
   @JSExport
   def main(canvas: html.Canvas): Unit = {
     val renderer = canvas.getContext("2d").asInstanceOf[dom.CanvasRenderingContext2D]
-
     canvas.width = CANVAS_WIDTH
     canvas.height = CANVAS_HEIGHT
-
     val agents: Array[Agent] = {
-      //val AGENT_COUNT = 10
       val agentsSeq: Seq[Agent] = for (_ <- 0 to AGENT_COUNT-1) yield {
         val x = Random.nextInt(canvas.width).toFloat
         val y = Random.nextInt(canvas.height).toFloat
@@ -63,12 +60,9 @@ object ParticlesApp {
         def sense(agent: Agent, sensorAngleOffset: Float): Float = {
           val sensorAngle = agent.angle + sensorAngleOffset
           val sensorDir = (Math.cos(sensorAngle), Math.sin(sensorAngle))
-          //val SENSOR_OFFSET_DIST = 2
           val sensorCentre = ((agent.position._1 + sensorDir._1 * SENSOR_OFFSET_DIST).toInt,
             (agent.position._2 + sensorDir._2 * SENSOR_OFFSET_DIST).toInt)
           var sum = 0F
-
-          //val SENSOR_SIZE = 1
           for (
             offsetX <- -SENSOR_SIZE to SENSOR_SIZE;
             offsetY <- -SENSOR_SIZE to SENSOR_SIZE
@@ -82,8 +76,6 @@ object ParticlesApp {
           sum
         }
 
-//        val SIDE_ANGLE = 45
-//        val TURN_SPEED = 0.9F
         val weightForward = sense(agent, 0)
         val weightLeft = sense(agent, SIDE_ANGLE)
         val weightRight = sense(agent, -SIDE_ANGLE)
